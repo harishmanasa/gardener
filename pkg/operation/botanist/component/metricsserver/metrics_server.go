@@ -52,6 +52,7 @@ const (
 	serviceName        = "metrics-server"
 	serviceAccountName = "metrics-server"
 	containerName      = "metrics-server"
+	sideCarName        = "pod-nanny"
 
 	servicePort   int32 = 443
 	containerPort int32 = 8443
@@ -147,6 +148,11 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 					APIGroups: []string{""},
 					Resources: []string{"pods", "nodes", "nodes/stats", "namespaces", "configmaps"},
 					Verbs:     []string{"get", "list", "watch"},
+				},
+				{
+					APIGroups: []string{"apps"},
+					Resources: []string{"deployments"},
+					Verbs:     []string{"get", "list", "update", "watch"},
 				},
 			},
 		}
@@ -357,6 +363,44 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 							VolumeMounts: []corev1.VolumeMount{{
 								Name:      volumeMountNameServer,
 								MountPath: volumeMountPathServer,
+							}},
+						}, {
+							Name:            sideCarName,
+							Image:           "k8s.gcr.io/addon-resizer:1.8.7",
+							ImagePullPolicy: corev1.PullIfNotPresent,
+							Command: []string{
+								"/pod-nanny",
+								"--cpu=300m",
+								"--extra-cpu=20m",
+								"--memory=200Mi",
+								"--extra-memory=10Mi",
+								"--threshold=5",
+								"--deployment=nanny-v1",
+							},
+							Resources: corev1.ResourceRequirements{
+								Requests: corev1.ResourceList{
+									corev1.ResourceCPU:    resource.MustParse("300m"),
+									corev1.ResourceMemory: resource.MustParse("200Mi"),
+								},
+								Limits: corev1.ResourceList{
+									corev1.ResourceCPU:    resource.MustParse("600m"),
+									corev1.ResourceMemory: resource.MustParse("400Mi"),
+								},
+							},
+							Env: []corev1.EnvVar{{
+								Name: "MY_POD_NAME",
+								ValueFrom: &corev1.EnvVarSource{
+									FieldRef: &corev1.ObjectFieldSelector{
+										FieldPath: "metadata.name",
+									},
+								},
+							}, {
+								Name: "MY_POD_NAMESPACE",
+								ValueFrom: &corev1.EnvVarSource{
+									FieldRef: &corev1.ObjectFieldSelector{
+										FieldPath: "metadata.namespace",
+									},
+								},
 							}},
 						}},
 						Volumes: []corev1.Volume{{
