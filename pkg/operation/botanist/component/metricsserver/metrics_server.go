@@ -52,7 +52,7 @@ const (
 	serviceName        = "metrics-server"
 	serviceAccountName = "metrics-server"
 	containerName      = "metrics-server"
-	sideCarName        = "pod-nanny"
+	sideCarName        = "metrics-server-nanny"
 
 	servicePort   int32 = 443
 	containerPort int32 = 8443
@@ -370,21 +370,26 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command: []string{
 								"/pod-nanny",
-								"--cpu=300m",
-								"--extra-cpu=20m",
-								"--memory=200Mi",
-								"--extra-memory=10Mi",
+								"--cpu=20m",
+								"--extra-cpu=1m",
+								"--memory=15Mi",
+								"--extra-memory=2Mi",
 								"--threshold=5",
-								"--deployment=nanny-v1",
+								"--deployment=metrics-server",
+								"--container=metrics-server",
+								"--poll-period=300000",
+								"--estimator=exponential",
+								"--minClusterSize=10",
+								"--use-metrics=true",
 							},
 							Resources: corev1.ResourceRequirements{
 								Requests: corev1.ResourceList{
-									corev1.ResourceCPU:    resource.MustParse("300m"),
-									corev1.ResourceMemory: resource.MustParse("200Mi"),
+									corev1.ResourceCPU:    resource.MustParse("40m"),
+									corev1.ResourceMemory: resource.MustParse("25Mi"),
 								},
 								Limits: corev1.ResourceList{
-									corev1.ResourceCPU:    resource.MustParse("600m"),
-									corev1.ResourceMemory: resource.MustParse("400Mi"),
+									corev1.ResourceCPU:    resource.MustParse("40m"),
+									corev1.ResourceMemory: resource.MustParse("25Mi"),
 								},
 							},
 							Env: []corev1.EnvVar{{
