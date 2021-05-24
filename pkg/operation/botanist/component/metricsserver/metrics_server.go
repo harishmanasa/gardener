@@ -368,7 +368,8 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 							Name:            sideCarName,
 							Image:           "k8s.gcr.io/addon-resizer:1.8.7",
 							ImagePullPolicy: corev1.PullIfNotPresent,
-							Args: []string{
+							Command: []string{
+								"/pod_nanny",
 								"--cpu=20m",
 								"--extra-cpu=1m",
 								"--memory=15Mi",
