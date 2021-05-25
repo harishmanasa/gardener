@@ -366,7 +366,7 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 							}},
 						}, {
 							Name:            sideCarName,
-							Image:           "k8s.gcr.io/addon-resizer:1.8.7",
+							Image:           "k8s.gcr.io/addon-resizer:1.8.11",
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command: []string{
 								"/pod_nanny",
@@ -378,9 +378,6 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 								"--deployment=metrics-server",
 								"--container=metrics-server",
 								"--poll-period=300000",
-								"--estimator=exponential",
-								"--minClusterSize=10",
-								"--use-metrics=true",
 							},
 							Resources: corev1.ResourceRequirements{
 								Requests: corev1.ResourceList{
