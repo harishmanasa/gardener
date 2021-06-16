@@ -379,6 +379,7 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 								"--deployment=metrics-server",
 								"--container=metrics-server",
 								"--poll-period=300000",
+								"--use-metrics=true",
 							},
 							Resources: corev1.ResourceRequirements{
 								Requests: corev1.ResourceList{
