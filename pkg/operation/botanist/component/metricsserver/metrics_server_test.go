@@ -45,6 +45,7 @@ var _ = Describe("MetricsServer", func() {
 		namespace         = "shoot--foo--bar"
 		image             = "k8s.gcr.io/metrics-server:v4.5.6"
 		kubeAPIServerHost = "foo.bar"
+		sideCar           = "k8s.gcr.io/addon-resizer:1.8.11"
 
 		secretNameCA         = "ca-metrics-server"
 		secretChecksumCA     = "1234"
@@ -393,7 +394,7 @@ status: {}
 		ctrl = gomock.NewController(GinkgoT())
 		c = mockclient.NewMockClient(ctrl)
 
-		metricsServer = New(c, namespace, image, false, nil)
+		metricsServer = New(c, namespace, image, false, nil, sideCar)
 
 		managedResourceSecret = &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
@@ -486,7 +487,7 @@ status: {}
 			})
 
 			It("should successfully deploy all resources (w/ VPA, w/ host env)", func() {
-				metricsServer = New(c, namespace, image, true, &kubeAPIServerHost)
+				metricsServer = New(c, namespace, image, true, &kubeAPIServerHost, sideCar)
 				metricsServer.SetSecrets(secrets)
 
 				managedResourceSecret.Data["deployment__kube-system__metrics-server.yaml"] = []byte(deploymentYAMLWithHostEnv)

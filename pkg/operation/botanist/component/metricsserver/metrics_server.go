@@ -75,6 +75,7 @@ func New(
 	image string,
 	vpaEnabled bool,
 	kubeAPIServerHost *string,
+	sideCar string,
 ) Interface {
 	return &metricsServer{
 		client:            client,
@@ -82,6 +83,7 @@ func New(
 		image:             image,
 		vpaEnabled:        vpaEnabled,
 		kubeAPIServerHost: kubeAPIServerHost,
+		sideCar:           sideCar,
 	}
 }
 
@@ -91,8 +93,8 @@ type metricsServer struct {
 	image             string
 	vpaEnabled        bool
 	kubeAPIServerHost *string
-
-	secrets Secrets
+	sideCar           string
+	secrets           Secrets
 }
 
 func (m *metricsServer) Deploy(ctx context.Context) error {
@@ -367,7 +369,7 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 							}},
 						}, {
 							Name:            sideCarName,
-							Image:           "k8s.gcr.io/addon-resizer:1.8.11",
+							Image:           m.sideCar,
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command: []string{
 								"/pod_nanny",
@@ -438,7 +440,7 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 		service,
 		apiService,
 		deployment,
-		vpa,
+		// vpa,
 	)
 }
 
