@@ -269,7 +269,7 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 					v1beta1constants.GardenRole:     v1beta1constants.GardenRoleSystemComponent,
 				}),
 				Annotations: map[string]string{
-					"gardener-resource-manager.gardener.cloud/preserveResources": "true",
+					resourcesv1alpha1.PreserveResources: true,
 				},
 			},
 			Spec: appsv1.DeploymentSpec{
