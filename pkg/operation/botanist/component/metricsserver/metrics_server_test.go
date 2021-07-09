@@ -102,27 +102,6 @@ spec:
   versionPriority: 100
 status: {}
 `
-		// 		vpaYAML = `apiVersion: autoscaling.k8s.io/v1beta2
-		// kind: VerticalPodAutoscaler
-		// metadata:
-		//   creationTimestamp: null
-		//   name: metrics-server
-		//   namespace: kube-system
-		// spec:
-		//   resourcePolicy:
-		//     containerPolicies:
-		//     - containerName: '*'
-		//       minAllowed:
-		//         cpu: 50m
-		//         memory: 150Mi
-		//   targetRef:
-		//     apiVersion: apps/v1
-		//     kind: Deployment
-		//     name: metrics-server
-		//   updatePolicy:
-		//     updateMode: Auto
-		// status: {}
-		// `
 		clusterRoleYAML = `apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
