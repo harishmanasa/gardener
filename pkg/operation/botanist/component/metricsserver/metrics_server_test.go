@@ -279,7 +279,7 @@ spec:
           - --deployment=metrics-server
           - --container=metrics-server
           - --poll-period=300000
-          - --use-metrics=true
+          - --use-metrics=false
       dnsPolicy: Default
       nodeSelector:
         worker.gardener.cloud/system-components: "true"
