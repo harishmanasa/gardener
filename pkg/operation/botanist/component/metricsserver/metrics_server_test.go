@@ -528,7 +528,6 @@ status: {}
 				metricsServer.SetSecrets(secrets)
 
 				managedResourceSecret.Data["deployment__kube-system__metrics-server.yaml"] = []byte(deploymentYAMLWithHostEnv)
-				// managedResourceSecret.Data["verticalpodautoscaler__kube-system__metrics-server.yaml"] = []byte(vpaYAML)
 
 				gomock.InOrder(
 					c.EXPECT().Get(ctx, kutil.Key(namespace, managedResourceSecretName), gomock.AssignableToTypeOf(&corev1.Secret{})),
