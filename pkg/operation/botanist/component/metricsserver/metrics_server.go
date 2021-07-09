@@ -441,7 +441,6 @@ func (m *metricsServer) computeResourcesData() (map[string][]byte, error) {
 		service,
 		apiService,
 		deployment,
-		// vpa,
 	)
 }
 
